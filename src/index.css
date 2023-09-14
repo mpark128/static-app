@@ -1,0 +1,135 @@
+body {
+  font-family: 'Arial', monospace;
+  font-size: 16px;
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.component-div {
+  margin-bottom: 30px;
+}
+
+h3 {
+  display: inline-block;
+}
+
+table {
+  border-collapse: collapse;
+}
+thead td {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 3px;
+  font-weight: 550;
+  text-align: center;
+  border: none;
+}
+tbody tr:hover {
+  border: .5px solid #E6E6E6;
+  background-color: #383838;
+}
+td {
+  border: .5px solid #E6E6E6;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.no-borders {
+  text-align: right;
+  border: none;
+}
+.clickable:hover {
+  cursor: pointer;
+  color: #7DBFFF;
+}
+.boxscore-data {
+  border-right: none;
+}
+.z {
+  border-left: none;
+  text-align: right;
+}
+.positive {
+  color: #00FF00;
+}
+.negative {
+  color: #FF0000;
+}
+
+ul {
+  display: inline-block;
+}
+li {
+  list-style-type: none;
+  padding: 3px;
+}
+
+#search {
+  margin-left: 10px;
+}
+
+button {
+  border-radius: 10px;
+  border: 1px solid;
+}
+button:hover {
+  cursor: pointer;
+}
+.close {
+  margin-right: 10px;
+  border-color: #FF0000;
+  background: none;
+  color: #FF0000;
+  vertical-align: top;
+}
+.close:hover {
+  border-color: #000000;
+  background-color: #FF0000;
+  color: #000000;
+}
+.watchlist-add {
+  border-color: #00FF00;
+  background: none;
+  color: #00FF00;
+}
+.watchlist-add:hover {
+  border-color: #000000;
+  background-color: #00FF00;
+  color: #000000;
+}
+.watchlist-remove {
+  border-color: #FF0000;
+  background: none;
+  color: #FF0000;
+}
+.watchlist-remove:hover {
+  border-color: #000000;
+  background-color: #FF0000;
+  color: #000000;
+}
+
+.non-button {
+  font-family: 'Arial', monospace;
+  font-size: 16px;
+  color: #FFFFFF;
+  border: none;
+  background: none;
+}
+.non-button:hover {
+  cursor: pointer;
+  color: #7DBFFF;
+}
+
+.gamelog-button {
+  font-size: 16px;
+  margin: 10px;
+  border-color: #7DBFFF;
+  background: none;
+  color: #7DBFFF;
+  vertical-align: top;
+}
+.gamelog-button:hover {
+  border-color: #000000;
+  background-color: #7DBFFF;
+  color: #000000;
+}
