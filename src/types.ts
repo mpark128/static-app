@@ -107,7 +107,7 @@ export type data_obj = {
     meta: {
         seasons:string[],
         last_updated:string,
-        to_date:string
+        to_date:string|null
     }
 }
 
