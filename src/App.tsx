@@ -1,46 +1,44 @@
-import { playerObj } from '../../pern-app/types';
+import { player, team, game, data_obj, player_obj } from './types';
 import { useEffect, useState } from 'react';
 import PlayerTable from './PlayerTable';
-import PlayerProfile from './PlayerProfile';
-import * as d from './data.json'
-
-type json_data = {
-  info: {
-    last_updated:string,
-    season:string
-  };
-  players:playerObj[];
-};
+import Player from './Player';
+import * as postgres_data from './postgres_data.json';
 
 function App() {
   // get data from json server
-  const [data, setData] = useState<playerObj[]>([]);
+  const [players_db, setPlayers_db] = useState<player[]>([]);
+  const [teams, setTeams] = useState<team[]>([]);
+  const [games, setGames] = useState<game[]>([]);
   const [season, setSeason] = useState<string>('');
   const [updated, setUpdated] = useState<string>('');
 
   useEffect(() => {
-    const json_data:json_data = d;
-    setData(json_data.players);
-    setSeason(json_data.info.season);
-    setUpdated(json_data.info.last_updated);
+    const data = postgres_data as data_obj;
+    setPlayers_db(data.players);
+    setTeams(data.teams);
+    setGames(data.schedule);
+    setSeason(data.meta.seasons[0]);
+    setUpdated(data.meta.last_updated);
   }, []);
-  console.log(data);
+  console.log(players_db);
+  console.log(teams);
 
-  const [players, setPlayers] = useState<playerObj[]>(data);
+  const [players, setPlayers] = useState<player[]>(players_db);
   useEffect(() => {
-    setPlayers(data);
-  }, [data]);
-  const [watchlist, setWatchlist] = useState<playerObj[]>([]);
-  const [team, setTeam] = useState<playerObj[]>([]);
-  const [position, setPosition] = useState<playerObj[]>([]);
-  const [player, setPlayer] = useState<playerObj|null>(null);
+    setPlayers(players_db);
+  }, [players_db]);
+  const [watchlist, setWatchlist] = useState<player[]>([]);
+  const [team, setTeam] = useState<team|null>(null);
+  const [team_roster, setRoster] = useState<player[]>([]);
+  const [position, setPosition] = useState<player[]>([]);
+  const [player_obj, setPlayer_obj] = useState<player_obj|null>(null);
 
   // search bar function
   const handleSearch = (e:React.KeyboardEvent<HTMLInputElement>) => {
     const value:string = e.currentTarget.value;
     // filter data for players who's name includes values from search bar
-    let new_players = data.filter(p => {
-      return p.playerInfo.player.name.toLowerCase().includes(value.toLowerCase());
+    let new_players = players_db.filter(p => {
+      return `${p.first_name} ${p.last_name}`.toLowerCase().includes(value.toLowerCase());
     });
     setPlayers(new_players);
   }
@@ -51,10 +49,13 @@ function App() {
     if (e.currentTarget.dataset.value !== undefined) {
       player_id = parseInt(e.currentTarget.dataset.value);
     }
-    const target_player = data.filter(p => {
-      return p.playerInfo.player.id === player_id;
-    });
-    setPlayer(target_player[0]);
+    const target_player = players_db.find(p => p.id === player_id) as player;
+    const target_team = teams.find(t => t.id === target_player.team_id) as team;
+    const p_obj:player_obj = {
+      player: target_player,
+      team: target_team
+    };
+    setPlayer_obj(p_obj);
     window.scrollTo({top: 0});
   }
 
@@ -62,12 +63,12 @@ function App() {
   const handleWatchlist = (e:React.MouseEvent<HTMLButtonElement>) => {
     const player_id:number = parseInt(e.currentTarget.value);
     players.forEach(p => {
-      if (p.playerInfo.player.id === player_id) {
+      if (p.id === player_id) {
         // is player in watchlist?
-        const in_watchlist:boolean = watchlist.some(w => w.playerInfo.player.id === player_id);
+        const in_watchlist:boolean = watchlist.some(w => w.id === player_id);
         if (in_watchlist) {
           // if player is already in watchlist, remove player
-          const updated_watchlist:playerObj[] = watchlist.filter(w => w.playerInfo.player.id !== player_id);
+          const updated_watchlist:player[] = watchlist.filter(w => w.id !== player_id);
           setWatchlist(updated_watchlist);
         } else {
           // if player is not in watchlist, add player
@@ -75,17 +76,18 @@ function App() {
         }
       }
     });
+    window.scrollTo({top: 0});
   }
 
   // get team roster
   const handleTeam = (e:React.MouseEvent<HTMLButtonElement>) => {
     const team_id:number = parseInt(e.currentTarget.value);
+    setTeam(teams.find(team => team.id === team_id) as team);
     // filter data for all players on the same team
-    const team_roster:playerObj[] = data.filter(p => {
-      return p.playerInfo.player.team.id === team_id;
-    }); 
-    setTeam(team_roster);
+    const roster:player[] = players_db.filter(player => player.team_id === team_id);
+    setRoster(roster);
     setPosition([]);
+    window.scrollTo({top: 0});
   }
 
   // filter players by position
@@ -101,22 +103,23 @@ function App() {
       setPosName('Centers');
     }
     // filter all players based on position
-    const samePos:playerObj[] = data.filter(p => {
-      return p.playerInfo.player.position.includes(targetPos);
+    const samePos:player[] = players_db.filter(p => {
+      return p.position.includes(targetPos);
     });
     setPosition(samePos);
-    setTeam([]);
+    setTeam(null);
+    window.scrollTo({top: 0});
   }
 
   // reset teams/positions tables
   const handleReset = (e:React.MouseEvent<HTMLButtonElement>) => {
-    setTeam([]);
+    setTeam(null);
     setPosition([]);
   }
 
   // clear player page
   const handlePlayerClose = (e:React.MouseEvent<HTMLButtonElement>) => {
-    setPlayer(null);
+    setPlayer_obj(null);
   }
 
   return (
@@ -124,28 +127,32 @@ function App() {
       <h5>Last Updated: {updated}</h5>
       <h5>Season: {season}</h5>
       <div className='content'>
-        {player && 
-          <div className='component-div'>
-            <div>
-              <h3>{player.playerInfo.player.name}</h3>
-              <button className='close' onClick={handlePlayerClose}>Close</button>
-            </div>
-            <PlayerProfile player={player} handleTeam={handleTeam} handlePosition={handlePosition} />
-          </div>
-        }
         {watchlist.length > 0 && 
           <div className='component-div'>
             <h3>Watchlist</h3>
-            <PlayerTable players={watchlist} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio1' />
+            <PlayerTable players={watchlist} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio1' />
           </div> 
         }
-        {team.length > 0 && 
+        {player_obj && 
           <div className='component-div'>
             <div>
-              <h3>{`${team[0].playerInfo.player.team.city} ${team[0].playerInfo.player.team.name}`}</h3>
+              <h3>{`${player_obj.player.first_name} ${player_obj.player.last_name}`}</h3>
+              <button className='close' onClick={handlePlayerClose}>Close</button>
+            </div>
+            <Player player_obj={player_obj} teams={teams} games={games} handleTeam={handleTeam} handlePosition={handlePosition} />
+          </div>
+        }
+        {team && 
+          <div className='component-div'>
+            <div>
+              {team.city ? (
+                <h3>{team.city} {team.name}</h3>
+              ) : (
+                <h3>{team.name}</h3>
+              )}
               <button className='close' onClick={handleReset}>Close</button>
             </div>
-            <PlayerTable players={team} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio2' />
+            <PlayerTable players={team_roster} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio2' />
           </div>
         }
         {position.length > 0 && 
@@ -154,14 +161,14 @@ function App() {
               <h3>{posName}</h3>
               <button className='close' onClick={handleReset}>Close</button>
             </div>
-            <PlayerTable players={position} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio3' />
+            <PlayerTable players={position} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio3' />
           </div>
         }
         <div>
           <h3>Active Players</h3>
           <input id='search' autoFocus autoComplete='off' placeholder='Search Player' type='text' onKeyUp={handleSearch}></input>
         </div>
-        <PlayerTable players={players} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio0' />
+        <PlayerTable players={players} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio0' />
       </div>
     </div>
   );

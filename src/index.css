@@ -71,6 +71,7 @@ li {
 button {
   border-radius: 10px;
   border: 1px solid;
+  font-size: 12px;
 }
 button:hover {
   cursor: pointer;
@@ -110,7 +111,6 @@ button:hover {
 
 .non-button {
   font-family: 'Arial', monospace;
-  font-size: 16px;
   color: #FFFFFF;
   border: none;
   background: none;

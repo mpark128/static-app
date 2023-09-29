@@ -1,10 +1,11 @@
-import { boxscore, playerObj, Team, Player, Gamelog } from '../../pern-app/types';
+import { boxscore, player, team } from './types';
 import { useState, useEffect } from "react"
 import DataTD from './DataTD';
 
 type PlayerTableProps = {
-    players: playerObj[],
-    watchlist: playerObj[],
+    players: player[],
+    teams: team[],
+    watchlist: player[],
     handlePlayer: (e: React.MouseEvent<HTMLTableCellElement>) => void,
     handleWatchlist: (e: React.MouseEvent<HTMLButtonElement>) => void,
     handleTeam: (e: React.MouseEvent<HTMLButtonElement>) => void, 
@@ -12,8 +13,8 @@ type PlayerTableProps = {
     radioName: string
 }
 
-function PlayerTable({ players, watchlist, handlePlayer, handleWatchlist, handleTeam, handlePosition, radioName }: PlayerTableProps) {
-    const [playersData, setPlayersData] = useState<playerObj[]>(players);
+function PlayerTable({ players, teams, watchlist, handlePlayer, handleWatchlist, handleTeam, handlePosition, radioName }: PlayerTableProps) {
+    const [playersData, setPlayersData] = useState<player[]>(players);
     useEffect(() => {
         setPlayersData(players);
     }, [players]);
@@ -26,16 +27,16 @@ function PlayerTable({ players, watchlist, handlePlayer, handleWatchlist, handle
 
     // sort table by column
     const handleSortStats = (key:keyof boxscore, format:string) => {
-        const sortDesc = (a:playerObj, b:playerObj, key:keyof boxscore):number => {
+        const sortDesc = (a:player, b:player, key:keyof boxscore):number => {
             let valueA:number|null = null;
             let valueB:number|null = null;
 
             if (format === 'totals') {
-                valueA = a.playerInfo.totals[key]; 
-                valueB = b.playerInfo.totals[key]; 
+                valueA = a.stats.totals[key]; 
+                valueB = b.stats.totals[key]; 
             } else if (format === 'avgs') {
-                valueA = a.playerInfo.avgs[key]; 
-                valueB = b.playerInfo.avgs[key]; 
+                valueA = a.stats.avgs[key]; 
+                valueB = b.stats.avgs[key]; 
             }
 
             if (valueA === null) {
@@ -67,28 +68,28 @@ function PlayerTable({ players, watchlist, handlePlayer, handleWatchlist, handle
                             <td>Name</td>
                             <td>Team</td>
                             <td>Pos</td>
-                            <td className='clickable' onClick={() => handleSortStats('games', format)}>GP</td>
-                            <td className='clickable' onClick={() => handleSortStats('games', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('games_played', format)}>GP</td>
+                            <td className='clickable' onClick={() => handleSortStats('games_played', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('minutes', format)}>MIN</td>
                             <td className='clickable' onClick={() => handleSortStats('minutes', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('fgm', format)}>FGM</td>
                             <td className='clickable' onClick={() => handleSortStats('fgm', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('fga', format)}>FGA</td>
                             <td className='clickable' onClick={() => handleSortStats('fga', format)}>z</td>
-                            <td className='clickable' onClick={() => handleSortStats('fgPct', format)}>FG%</td>
-                            <td className='clickable' onClick={() => handleSortStats('fgPct', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('fg_pct', format)}>FG%</td>
+                            <td className='clickable' onClick={() => handleSortStats('fg_pct', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('ftm', format)}>FTM</td>
                             <td className='clickable' onClick={() => handleSortStats('ftm', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('fta', format)}>FTA</td>
                             <td className='clickable' onClick={() => handleSortStats('fta', format)}>z</td>
-                            <td className='clickable' onClick={() => handleSortStats('ftPct', format)}>FT%</td>
-                            <td className='clickable' onClick={() => handleSortStats('ftPct', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('ft_pct', format)}>FT%</td>
+                            <td className='clickable' onClick={() => handleSortStats('ft_pct', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('fg3m', format)}>3PM</td>
                             <td className='clickable' onClick={() => handleSortStats('fg3m', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('fg3a', format)}>3PA</td>
                             <td className='clickable' onClick={() => handleSortStats('fg3a', format)}>z</td>
-                            <td className='clickable' onClick={() => handleSortStats('fg3Pct', format)}>3P%</td>
-                            <td className='clickable' onClick={() => handleSortStats('fg3Pct', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('fg3_pct', format)}>3P%</td>
+                            <td className='clickable' onClick={() => handleSortStats('fg3_pct', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('pts', format)}>PTS</td>
                             <td className='clickable' onClick={() => handleSortStats('pts', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('oreb', format)}>ORB</td>
@@ -107,24 +108,24 @@ function PlayerTable({ players, watchlist, handlePlayer, handleWatchlist, handle
                             <td className='clickable' onClick={() => handleSortStats('tov', format)}>z</td>
                             <td className='clickable' onClick={() => handleSortStats('pf', format)}>PF</td>
                             <td className='clickable' onClick={() => handleSortStats('pf', format)}>z</td>
-                            <td className='clickable' onClick={() => handleSortStats('plusMinus', format)}>+/-</td>
-                            <td className='clickable' onClick={() => handleSortStats('plusMinus', format)}>z</td>
-                            <td className='clickable' onClick={() => handleSortStats('fantasyPts', format)}>FPT</td>
-                            <td className='clickable' onClick={() => handleSortStats('fantasyPts', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('plus_minus', format)}>+/-</td>
+                            <td className='clickable' onClick={() => handleSortStats('plus_minus', format)}>z</td>
+                            <td className='clickable' onClick={() => handleSortStats('fantasy_pts', format)}>FPT</td>
+                            <td className='clickable' onClick={() => handleSortStats('fantasy_pts', format)}>z</td>
                         </tr>
                     </thead>
                     <tbody>
                         {playersData.map(p => (
-                            <tr id={p.playerInfo.player.slug} key={p.playerInfo.player.id}>
-                                {watchlist.some(w => w.playerInfo.player.id === p.playerInfo.player.id) ? (
-                                    <td className='no-borders'><button className='watchlist-remove' value={p.playerInfo.player.id} onClick={handleWatchlist}>-</button></td>
+                            <tr id={p.slug} key={p.id}>
+                                {watchlist.some(w => w.id === p.id) ? (
+                                    <td className='no-borders'><button className='watchlist-remove' value={p.id} onClick={handleWatchlist}>-</button></td>
                                 ) : (
-                                    <td className='no-borders'><button className='watchlist-add' value={p.playerInfo.player.id} onClick={handleWatchlist}>+</button></td>
+                                    <td className='no-borders'><button className='watchlist-add' value={p.id} onClick={handleWatchlist}>+</button></td>
                                 )}
-                                <td className='clickable' onClick={handlePlayer} data-value={p.playerInfo.player.id}>{p.playerInfo.player.name}</td>
-                                <td><button className='non-button' value={p.playerInfo.player.team.id} onClick={handleTeam}>{p.playerInfo.player.team.abbreviation}</button></td>
-                                <td>{p.playerInfo.player.position.length > 0 ? (
-                                    p.playerInfo.player.position.map(pos => (
+                                <td className='clickable' onClick={handlePlayer} data-value={p.id}>{`${p.first_name} ${p.last_name}`}</td>
+                                <td><button className='non-button' value={p.team_id} onClick={handleTeam}>{teams.find(team => team.player_ids.includes(p.id))?.abbreviation}</button></td>
+                                <td>{p.position.length > 0 ? (
+                                    p.position.map(pos => (
                                         <button key={pos} className='non-button' value={pos} onClick={handlePosition}>{pos}</button>
                                     ))
                                     ) : (
