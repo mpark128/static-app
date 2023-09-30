@@ -1,6 +1,6 @@
 {
   "homepage": "https://mpark128.github.io/static-app",
-  "name": "client",
+  "name": "static-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
