@@ -5,6 +5,25 @@ body {
   color: #FFFFFF;
 }
 
+.navbar {
+  justify-content: space-between;
+  align-items: baseline;
+  display: flex;
+}
+.nav-button {
+  padding: 10px;
+}
+button:disabled {
+  color: #000000; 
+  border-color: #000000;
+  background-color: #7E7E7E;
+  cursor: not-allowed;
+}
+.navbar-items {
+  display: flex;
+  list-style: none;
+}
+
 .component-div {
   margin-bottom: 30px;
 }
@@ -13,11 +32,32 @@ h3 {
   display: inline-block;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  max-width: 80vw;
+  margin: 0 auto;
+  position: relative;
+}
+.table-format {
+  padding: 10px;
+}
+.table-container {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
 table {
   border-collapse: collapse;
 }
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #000000;
+}
 thead td {
-  padding-top: 10px;
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 3px;
@@ -25,6 +65,7 @@ thead td {
   text-align: center;
   border: none;
 }
+
 tbody tr:hover {
   border: .5px solid #E6E6E6;
   background-color: #383838;
@@ -38,21 +79,29 @@ td {
   text-align: right;
   border: none;
 }
+.table-header {
+  border-top: .5px solid #E6E6E6;
+}
+.table-left {
+  border-left: .5px solid #E6E6E6;
+}
+.table-right {
+  border-right: .5px solid #E6E6E6;
+}
 .clickable:hover {
   cursor: pointer;
   color: #7DBFFF;
 }
 .boxscore-data {
-  border-right: none;
+  text-align: center;
 }
-.z {
-  border-left: none;
-  text-align: right;
-}
+
 .positive {
+  text-align: center;
   color: #00FF00;
 }
 .negative {
+  text-align: center;
   color: #FF0000;
 }
 
@@ -75,6 +124,10 @@ button {
 }
 button:hover {
   cursor: pointer;
+}
+.active-button {
+  font-weight: 550;
+  background-color: #7DBFFF;
 }
 .close {
   margin-right: 10px;

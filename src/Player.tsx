@@ -1,19 +1,19 @@
 import { player, team, game, player_obj } from './types';
 import { useState, useEffect } from "react"
 import DataTD from './DataTD';
+import ValueTD from './ValueTD';
 import GamelogTable from './GamelogTable';
 
 type PlayerProps = {
-    player_obj: player_obj,
+    player: player_obj,
     teams: team[],
     games: game[],
     handleTeam: (e: React.MouseEvent<HTMLButtonElement>) => void,
     handlePosition: (e: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-function Player({ player_obj, teams, games, handleTeam, handlePosition }: PlayerProps) {
-    const player:player = player_obj.player;
-    const team:team = player_obj.team;
+function Player({ player, teams, games, handleTeam, handlePosition }: PlayerProps) {
+    const team = teams.find(t => t.id === player.player.team_id) as team;
     // display / hide gamelogs
     const [showGamelogs, setShowGamelogs] = useState<boolean>(false);
     const handleGamelogs = (e:React.MouseEvent<HTMLButtonElement>) => {
@@ -25,7 +25,7 @@ function Player({ player_obj, teams, games, handleTeam, handlePosition }: Player
     }
     const [height, setHeight] = useState<string>('');
     useEffect(() => {
-        const height_inches:number = player.height_inches;
+        const height_inches:number = player.player.height_inches;
         const feet:number = Math.floor(height_inches / 12);
         const inches:number = height_inches % 12;
         setHeight(`${feet}-${inches}`);
@@ -35,20 +35,20 @@ function Player({ player_obj, teams, games, handleTeam, handlePosition }: Player
         <div>
             <ul>
                 {team.city ? (
-                    <li>Team: <button className='non-button' value={player.team_id} onClick={handleTeam}>{`${team.city} ${team.name}`}</button></li>
+                    <li>Team: <button className='non-button' value={team.id} onClick={handleTeam}>{`${team.city} ${team.name}`}</button></li>
                 ) : (
-                    <li>Team: <button className='non-button' value={player.team_id} onClick={handleTeam}>{`${team.name}`}</button></li>
+                    <li>Team: <button className='non-button' value={team.id} onClick={handleTeam}>{`${team.name}`}</button></li>
                 )}
-                <li>Position: {player.position.length > 0 ? (
-                    player.position.map(pos => (
+                <li>Position: {player.player.position.length > 0 ? (
+                    player.player.position.map(pos => (
                         <button key={pos} className='non-button' value={pos} onClick={handlePosition}>{pos}</button>
                     ))
                     ) : (
                         <button className='non-button'></button>
                     )}
                 </li>
-                {player.jsy_number ? (
-                    <li>Jersey Number: {player.jsy_number}</li>
+                {player.player.jsy_number ? (
+                    <li>Jersey Number: {player.player.jsy_number}</li>
                 ) : (
                     <li>Jersey Number: N/A</li>
                 )}
@@ -56,82 +56,88 @@ function Player({ player_obj, teams, games, handleTeam, handlePosition }: Player
             </ul>
             <ul>
                 <li>Height: {height}</li>
-                <li>Weight: {player.weight_lbs}</li>
-                <li>Years Active: {player.to_year - player.from_year}</li>
+                <li>Weight: {player.player.weight_lbs}</li>
+                <li>Years Active: {player.player.to_year - player.player.from_year}</li>
             </ul>
             <ul>
-                <li>Draft: {player.draft_year ? (
-                        `${player.draft_year}, Round ${player.draft_round}, Pick ${player.draft_number}`
+                <li>Draft: {player.player.draft_year ? (
+                        `${player.player.draft_year}, Round ${player.player.draft_round}, Pick ${player.player.draft_number}`
                     ) : (
                         'Undrafted'
                     )}</li>
-                <li>Last Attended: {player.last_attended}</li>
-                <li>Country: {player.country}</li>
-            </ul>  
-            <table>
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>GP</td>
-                        <td>z</td>
-                        <td>MIN</td>
-                        <td>z</td>
-                        <td>FGM</td>
-                        <td>z</td>
-                        <td>FGA</td>
-                        <td>z</td>
-                        <td>FG%</td>
-                        <td>z</td>
-                        <td>FTM</td>
-                        <td>z</td>
-                        <td>FTA</td>
-                        <td>z</td>
-                        <td>FT%</td>
-                        <td>z</td>
-                        <td>3PM</td>
-                        <td>z</td>
-                        <td>3PA</td>
-                        <td>z</td>
-                        <td>3PT%</td>
-                        <td>z</td>
-                        <td>PTS</td>
-                        <td>z</td>
-                        <td>ORB</td>
-                        <td>z</td>
-                        <td>DRB</td>
-                        <td>z</td>
-                        <td>REB</td>
-                        <td>z</td>
-                        <td>AST</td>
-                        <td>z</td>
-                        <td>STL</td>
-                        <td>z</td>
-                        <td>BLK</td>
-                        <td>z</td>
-                        <td>TOV</td>
-                        <td>z</td>
-                        <td>PF</td>
-                        <td>z</td>
-                        <td>+/-</td>
-                        <td>z</td>
-                        <td>FPT</td>
-                        <td>z</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td className='no-borders'>Totals</td>
-                        <DataTD player={player} format='totals' />
-                    </tr>
-                    <tr>
-                        <td className='no-borders'>Averages</td>
-                        <DataTD player={player} format='avgs' />
-                    </tr>
-                </tbody>
-            </table>
+                <li>Last Attended: {player.player.last_attended}</li>
+                <li>Country: {player.player.country}</li>
+            </ul>
+            <div className='table-container'>
+                <table>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>GP</td>
+                            <td>MIN</td>
+                            <td>FGM</td>
+                            <td>FGA</td>
+                            <td>FG%</td>
+                            <td>FTM</td>
+                            <td>FTA</td>
+                            <td>FT%</td>
+                            <td>3PM</td>
+                            <td>3PA</td>
+                            <td>3P%</td>
+                            <td>PTS</td>
+                            <td>ORB</td>
+                            <td>DRB</td>
+                            <td>REB</td>
+                            <td>AST</td>
+                            <td>STL</td>
+                            <td>BLK</td>
+                            <td>TOV</td>
+                            <td>PF</td>
+                            <td>+/-</td>
+                            <td>FPT</td>
+
+                            <td>GP-V</td>
+                            <td>MIN-V</td>
+                            <td>FGM-V</td>
+                            <td>FGA-V</td>
+                            <td>FG%-V</td>
+                            <td>FTM-V</td>
+                            <td>FTA-V</td>
+                            <td>FT%-V</td>
+                            <td>3PM-V</td>
+                            <td>3PA-V</td>
+                            <td>3P%-V</td>
+                            <td>PTS-V</td>
+                            <td>ORB-V</td>
+                            <td>DRB-V</td>
+                            <td>REB-V</td>
+                            <td>AST-V</td>
+                            <td>STL-V</td>
+                            <td>BLK-V</td>
+                            <td>TOV-V</td>
+                            <td>PF-V</td>
+                            <td>+/-V</td>
+                            <td>FPT-V</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className='no-borders'>Totals</td>
+                            <DataTD boxscore={player.stats.counting_stats.totals} />
+                            <ValueTD boxscore={player.stats.z_score.totals} />
+                        </tr>
+                        <tr>
+                            <td className='no-borders'>Averages</td>
+                            <DataTD boxscore={player.stats.counting_stats.avgs}/>
+                            <ValueTD boxscore={player.stats.z_score.avgs} />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>  
+                
             <button className='gamelog-button' onClick={handleGamelogs}>{showGamelogs ? ('Hide Gamelogs') : ('Show Gamelogs')}</button> 
             {showGamelogs && 
-                <GamelogTable player_obj={player_obj} teams={teams} games={games} />
+                <GamelogTable player={player} teams={teams} games={games} />
             }
         </div>
     )
