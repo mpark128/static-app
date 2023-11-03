@@ -113,6 +113,11 @@ function App() {
     });
     setShowWatchlist(true);
   }
+  useEffect(() => {
+    if (watchlist.length < 1) {
+      setShowWatchlist(false);
+    }
+  }, [watchlist])
   // show watchlist when watchlist button is clicked
   const [showWatchlist, setShowWatchlist] = useState<boolean>(false);
   const handleShowWatchlist = (e:React.MouseEvent<HTMLButtonElement>) => {
