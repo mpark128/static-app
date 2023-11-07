@@ -503,5 +503,6 @@ export const get_stats = (players:player[], games:game[]):player_obj[] => {
         player_objs.push(player);
         
     });
+    player_objs.sort((a, b) => b.stats.z_score.value.totals - a.stats.z_score.value.totals); 
     return player_objs;
 };

@@ -95,40 +95,23 @@ function Player({ player, teams, games, handleTeam, handlePosition }: PlayerProp
                             <td>PF</td>
                             <td>+/-</td>
                             <td>FPT</td>
-
-                            <td>GP-V</td>
-                            <td>MIN-V</td>
-                            <td>FGM-V</td>
-                            <td>FGA-V</td>
-                            <td>FG%-V</td>
-                            <td>FTM-V</td>
-                            <td>FTA-V</td>
-                            <td>FT%-V</td>
-                            <td>3PM-V</td>
-                            <td>3PA-V</td>
-                            <td>3P%-V</td>
-                            <td>PTS-V</td>
-                            <td>ORB-V</td>
-                            <td>DRB-V</td>
-                            <td>REB-V</td>
-                            <td>AST-V</td>
-                            <td>STL-V</td>
-                            <td>BLK-V</td>
-                            <td>TOV-V</td>
-                            <td>PF-V</td>
-                            <td>+/-V</td>
-                            <td>FPT-V</td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td className='no-borders'>Totals</td>
                             <DataTD boxscore={player.stats.counting_stats.totals} />
+                        </tr>
+                        <tr>
+                            <td className='no-borders'>Z-Totals</td>
                             <ValueTD boxscore={player.stats.z_score.totals} />
                         </tr>
                         <tr>
                             <td className='no-borders'>Averages</td>
                             <DataTD boxscore={player.stats.counting_stats.avgs}/>
+                        </tr>
+                        <tr>
+                            <td className='no-borders'>Z-Avgs</td>
                             <ValueTD boxscore={player.stats.z_score.avgs} />
                         </tr>
                     </tbody>

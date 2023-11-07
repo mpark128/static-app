@@ -73,6 +73,13 @@ function App() {
   }
   useEffect(() => {
     setShowPlayers(true);
+
+    // update player stats
+    if (player !== null) {
+      const player_id:number = player.player.id;
+      const target_player = players.find(p => p.player.id === player_id) as player_obj;
+      setPlayer(target_player);
+    }
   }, [players]);
 
   // search bar function
@@ -191,10 +198,16 @@ function App() {
         {showPlayers && 
           <div>
             {posName ? (
-              <h1>Players - {posName}</h1>
+              <div>
+                <h1>Players</h1>
+                <h1>{posName}</h1>
+              </div>
             ) : (
               teamName ? (
-                <h1>Players - {teamName}</h1>
+                <div>
+                  <h1>Players</h1>
+                  <h1>{teamName}</h1>
+                </div>
               ) : (
                 <h1>Players</h1>
               )

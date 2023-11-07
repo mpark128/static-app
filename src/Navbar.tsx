@@ -20,15 +20,15 @@ function Navbar({data, updated, seasons, watchlist, handleSeasons, showPlayers, 
 
     return (
         <nav className="navbar">
-            <ul className="navbar-items">
-                <li><input id='search' autoFocus autoComplete='off' placeholder='Search Player' type='text' onKeyUp={handleSearch}></input></li>
-                <li><SeasonDropdown all_seasons={data.meta.seasons} seasons={seasons} handleSeasons={handleSeasons} /></li>
+            <input id='search' autoFocus autoComplete='off' placeholder='Search Player' type='text' onKeyUp={handleSearch}></input>
+            <ul>
+                <li><SeasonDropdown all_seasons={data.meta.seasons} seasons={seasons} handleSeasons={handleSeasons}/></li>
                 <li><WatchlistButton watchlist={watchlist} showWatchlist={showWatchlist} handleShowWatchlist={handleShowWatchlist} /></li>
                 <li><PlayersButton showPlayers={showPlayers} handleShowPlayers={handleShowPlayers} /></li>
                 <li><button className="nav-button">Teams</button></li>
                 <li><button className="nav-button">Games</button></li>
-                <li>Last Updated: {updated}</li>
             </ul>
+            Last Updated: {updated}
         </nav>
     );
 }
