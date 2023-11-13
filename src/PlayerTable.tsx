@@ -1,4 +1,4 @@
-import { boxscore, team, player_obj, player } from './types';
+import { boxscore, team, player_obj } from './types';
 import { useState, useEffect } from "react"
 import DataTD from './DataTD';
 import ValueTD from './ValueTD';
@@ -21,7 +21,7 @@ function PlayerTable({ players, teams, watchlist, handlePlayer, handleWatchlist,
     }, [players]);
 
     // set radio buttons
-    const [format, setFormat] = useState<string>('totals');
+    const [format, setFormat] = useState<string>('avgs');
     const handleFormatChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setFormat(e.currentTarget.value);
     }
@@ -86,11 +86,12 @@ function PlayerTable({ players, teams, watchlist, handlePlayer, handleWatchlist,
     return (
         <div className='container'>
             <div className="table-format">
-                <label>
-                    <input type="radio" name={radioName} value="totals" checked={format === 'totals'} onChange={handleFormatChange}></input>Totals
-                </label>
+                Stats Format:
                 <label>
                     <input type="radio" name={radioName} value="avgs" checked={format === 'avgs'} onChange={handleFormatChange}></input>Averages
+                </label>
+                <label>
+                    <input type="radio" name={radioName} value="totals" checked={format === 'totals'} onChange={handleFormatChange}></input>Totals
                 </label>
             </div>
             <div className='table-container'>

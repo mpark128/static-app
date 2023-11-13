@@ -124,3 +124,27 @@ export type player_obj = {
     player:player,
     stats:stats
 };
+
+export type record = {
+    wins:number,
+    losses:number
+}
+export type team_obj = {
+    team:team,
+    league:record,
+    conference:record,
+    division:record,
+    home:record,
+    away:record
+};
+
+export type gb = {
+    id:number,
+    gb:number|null
+};
+
+export type gb_obj = {
+    league:gb[],
+    conference:gb[],
+    division:gb[]
+};

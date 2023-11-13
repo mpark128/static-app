@@ -5,6 +5,7 @@ import PlayerTable from './PlayerTable';
 import Player from './Player';
 import * as postgres_data from './postgres_data.json';
 import Navbar from './Navbar';
+import Teams from './Teams';
 
 function App() {
   // get data from json server
@@ -21,8 +22,8 @@ function App() {
   const [watchlist, setWatchlist] = useState<player_obj[]>([]);
   const [player, setPlayer] = useState<player_obj|null>(null);
 
-  console.log(all_players);
-  // console.log(all_games);
+  // console.log(all_players);
+  // console.log(teams);
   // console.log(games);
   // console.log(seasons);
   // console.log(game_ids);
@@ -66,14 +67,7 @@ function App() {
     }
   }
 
-  // show players 
-  const [showPlayers, setShowPlayers] = useState<boolean>(true);
-  const handleShowPlayers = (e:React.MouseEvent<HTMLButtonElement>) => {
-    setShowPlayers(!showPlayers);
-  }
   useEffect(() => {
-    setShowPlayers(true);
-
     // update player stats
     if (player !== null) {
       const player_id:number = player.player.id;
@@ -89,6 +83,7 @@ function App() {
     let new_players = all_players.filter(p => `${p.player.first_name} ${p.player.last_name}`.toLowerCase().includes(value.toLowerCase()));
     setPlayers(new_players);
     setShowPlayers(true);
+    setShowTeams(false);
   }
 
   // get specific player for playerprofile page
@@ -104,7 +99,7 @@ function App() {
   // add/remove players from watchlist
   const handleWatchlist = (e:React.MouseEvent<HTMLButtonElement>) => {
     const player_id:number = parseInt(e.currentTarget.value);
-    players.forEach(p => {
+    all_players.forEach(p => {
       if (p.player.id === player_id) {
         // is player in watchlist?
         const in_watchlist:boolean = watchlist.some(w => w.player.id === player_id);
@@ -118,7 +113,6 @@ function App() {
         }
       }
     });
-    setShowWatchlist(true);
   }
   useEffect(() => {
     if (watchlist.length < 1) {
@@ -141,6 +135,7 @@ function App() {
     const pool:player_obj[] = all_players.filter(p => p.player.team_id === team_id);
     setPlayers(pool);
     setPosName(null);
+    setShowTeams(false);
     window.scrollTo({top: 0});
   }
 
@@ -175,16 +170,34 @@ function App() {
     setPlayers(all_players);
   }
 
+  // show players 
+  const [showPlayers, setShowPlayers] = useState<boolean>(true);
+  const handleShowPlayers = (e:React.MouseEvent<HTMLButtonElement>) => {
+    setShowPlayers(!showPlayers);
+    setShowTeams(false);
+    setShowGames(false);
+  }
+
+  // show teams
+  const [showTeams, setShowTeams] = useState<boolean>(false);
+  const handleShowTeams = (e:React.MouseEvent<HTMLButtonElement>) => {
+    setShowTeams(!showTeams);
+    setShowPlayers(false);
+    setShowGames(false);
+  }
+
+  // show games
+  const [showGames, setShowGames] = useState<boolean>(false);
+  const handleShowGames = (e:React.MouseEvent<HTMLButtonElement>) => {
+    setShowGames(!showGames);
+    setShowPlayers(false);
+    setShowTeams(false);
+  }
+
   return (
     <div className="App">
-      <Navbar data={data} updated={updated} seasons={seasons} watchlist={watchlist} handleSeasons={handleSeasons} showPlayers={showPlayers} handleShowPlayers={handleShowPlayers} showWatchlist={showWatchlist} handleShowWatchlist={handleShowWatchlist} handleSearch={handleSearch} />
+      <Navbar data={data} updated={updated} seasons={seasons} watchlist={watchlist} handleSeasons={handleSeasons} showPlayers={showPlayers} handleShowPlayers={handleShowPlayers} showWatchlist={showWatchlist} handleShowWatchlist={handleShowWatchlist} handleSearch={handleSearch} showTeams={showTeams} handleShowTeams={handleShowTeams} showGames={showGames} handleShowGames={handleShowGames}/>
       <div className='content'>
-        {showWatchlist && 
-          <div className='component-div'>
-            <h1>Watchlist</h1>
-            <PlayerTable players={watchlist} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio1' />
-          </div> 
-        }
         {player && 
           <div className='component-div'>
             <div>
@@ -195,30 +208,45 @@ function App() {
           </div>
         }
 
+        {showWatchlist && 
+          <div className='component-div'>
+            <h1>Watchlist</h1>
+            <PlayerTable players={watchlist} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio1' />
+          </div> 
+        }
+
         {showPlayers && 
           <div>
             {posName ? (
               <div>
-                <h1>Players</h1>
                 <h1>{posName}</h1>
               </div>
             ) : (
               teamName ? (
                 <div>
-                  <h1>Players</h1>
                   <h1>{teamName}</h1>
                 </div>
               ) : (
                 <h1>Players</h1>
               )
             )}
-              
             {posName || teamName ? (
               <button onClick={handleAllPlayers} >Back to all players</button>
             ) : (
               <button disabled={true} >Back to all players</button>
             )}
             <PlayerTable players={players} teams={teams} watchlist={watchlist} handlePlayer={handlePlayer} handleWatchlist={handleWatchlist} handleTeam={handleTeam} handlePosition={handlePosition} radioName='radio0' />
+          </div>
+        }
+        {showTeams && 
+          <div>
+            <h1>Teams</h1>
+            <Teams teams={teams} players={all_players} games={games} handleTeam={handleTeam}/>
+          </div>
+        }
+        {showGames &&
+          <div>
+            <h1>Games</h1>
           </div>
         }
       </div>

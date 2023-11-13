@@ -13,10 +13,6 @@ body {
 .nav-button {
   padding: 10px;
 }
-.navbar ul {
-  display: flex;
-  list-style: none;
-}
 
 button:disabled {
   color: #000000; 
@@ -186,4 +182,30 @@ button:hover {
   border-color: #000000;
   background-color: #7DBFFF;
   color: #000000;
+}
+
+#search {
+  width: 200px; 
+  padding: 5px;
+  margin: 10px;
+}
+
+#teams-grouping {
+  margin: 5px;
+}
+
+.flex-container {
+  display: flex;
+}
+.flex {
+  margin: 30px;
+  align-items: baseline;
+}
+
+.teams-division {
+  margin-top: 50px;
+}
+
+div {
+  margin: 3px;
 }

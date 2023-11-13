@@ -1,4 +1,4 @@
-import {player, game, boxscore, stats, player_obj} from './types';
+import {player, game, boxscore, stats, player_obj, team_obj, gb_obj, gb} from './types';
 
 export const sum = (a:number[]):number => {
     let sum = 0;
@@ -506,3 +506,125 @@ export const get_stats = (players:player[], games:game[]):player_obj[] => {
     player_objs.sort((a, b) => b.stats.z_score.value.totals - a.stats.z_score.value.totals); 
     return player_objs;
 };
+
+export const get_gb = (teams:team_obj[]):gb_obj => {
+    let top_records = {
+        league: 0,
+        conference: {
+            western: 0,
+            eastern: 0
+        },
+        division: {
+            atlantic: 0,
+            central: 0,
+            southeast: 0,
+            northwest: 0,
+            pacific: 0,
+            southwest: 0
+        }
+    };
+
+    // get top record for league/conference/division
+    teams.forEach(t => {
+        // top record: league
+        if (t.league.wins - t.league.losses > top_records.league) {
+            top_records.league = t.league.wins - t.league.losses;
+        }
+        // top record: conference
+        if (t.team.conference === 'Western') {
+            if (t.conference.wins - t.conference.losses > top_records.conference.western) {
+                top_records.conference.western = t.conference.wins - t.conference.losses;
+            }
+        } else if (t.team.conference === 'Eastern') {
+            if (t.conference.wins - t.conference.losses > top_records.conference.eastern) {
+                top_records.conference.eastern = t.conference.wins - t.conference.losses;
+            }
+        }
+        // top record: division
+        if (t.team.division === 'Atlantic') {
+            if (t.division.wins - t.division.losses > top_records.division.atlantic) {
+                top_records.division.atlantic = t.division.wins - t.division.losses;
+            }
+        } else if (t.team.division === 'Central') {
+            if (t.division.wins - t.division.losses > top_records.division.central) {
+                top_records.division.central = t.division.wins - t.division.losses;
+            }
+        } else if (t.team.division === 'Southeast') {
+            if (t.division.wins - t.division.losses > top_records.division.southeast) {
+                top_records.division.southeast = t.division.wins - t.division.losses;
+            }
+        } else if (t.team.division === 'Northwest') {
+            if (t.division.wins - t.division.losses > top_records.division.northwest) {
+                top_records.division.northwest = t.division.wins - t.division.losses;
+            }
+        } else if (t.team.division === 'Pacific') {
+            if (t.division.wins - t.division.losses > top_records.division.pacific) {
+                top_records.division.pacific = t.division.wins - t.division.losses;
+            }
+        } else if (t.team.division === 'Southwest') {
+            if (t.division.wins - t.division.losses > top_records.division.southwest) {
+                top_records.division.southwest = t.division.wins - t.division.losses;
+            }
+        }
+    });
+
+    // calculate gb
+    let league_gb:gb[] = [];
+    let conference_gb:gb[] = [];
+    let division_gb:gb[] = [];
+    teams.forEach(t => {
+        const calculate_gb = (difference:number):gb => {
+            if (difference == 0) {
+                const gb:gb = {
+                    id: t.team.id,
+                    gb: null
+                };
+                return gb;
+            } else {
+                const gb:gb = {
+                    id: t.team.id,
+                    gb: difference / 2
+                };
+                return gb;
+            }
+        };
+        // for league
+        const gb_league:gb = calculate_gb(top_records.league - (t.league.wins - t.league.losses));
+        league_gb.push(gb_league);
+        
+        // for conference
+        if (t.team.conference === 'Western') {
+            const gb_conference:gb = calculate_gb(top_records.conference.western - (t.conference.wins - t.conference.losses));
+            conference_gb.push(gb_conference);
+        } else if (t.team.conference === 'Eastern') {
+            const gb_conference:gb = calculate_gb(top_records.conference.eastern - (t.conference.wins - t.conference.losses));
+            conference_gb.push(gb_conference);
+        }   
+        // for division
+        if (t.team.division === 'Atlantic') {
+            const gb_div:gb = calculate_gb(top_records.division.atlantic - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        } else if (t.team.division === 'Central') {
+            const gb_div:gb = calculate_gb(top_records.division.central - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        } else if (t.team.division === 'Southeast') {
+            const gb_div:gb = calculate_gb(top_records.division.southeast - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        } else if (t.team.division === 'Northwest') {
+            const gb_div:gb = calculate_gb(top_records.division.northwest - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        } else if (t.team.division === 'Pacific') {
+            const gb_div:gb = calculate_gb(top_records.division.pacific - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        } else if (t.team.division === 'Southwest') {
+            const gb_div:gb = calculate_gb(top_records.division.southwest - (t.division.wins - t.division.losses));
+            division_gb.push(gb_div);
+        }
+    }); 
+    const gb_obj:gb_obj = {
+        league: league_gb,
+        conference: conference_gb,
+        division: division_gb
+    };
+    return gb_obj;
+}

@@ -1,7 +1,7 @@
 import { data_obj, player_obj } from "./types";
 import SeasonDropdown from "./SeasonDropdown";
 import WatchlistButton from "./WatchlistButton";
-import PlayersButton from "./PlayersButton";
+import VisibilityButton from "./VisibilityButton";
 
 type NavbarProps = {
     data:data_obj,
@@ -13,21 +13,23 @@ type NavbarProps = {
     handleShowPlayers:(e:React.MouseEvent<HTMLButtonElement>) => void,
     showWatchlist:boolean,
     handleShowWatchlist:(e:React.MouseEvent<HTMLButtonElement>) => void,
-    handleSearch:(e:React.KeyboardEvent<HTMLInputElement>) => void
+    handleSearch:(e:React.KeyboardEvent<HTMLInputElement>) => void,
+    showTeams:boolean,
+    handleShowTeams:(e:React.MouseEvent<HTMLButtonElement>) => void
+    showGames:boolean,
+    handleShowGames:(e:React.MouseEvent<HTMLButtonElement>) => void
 };
 
-function Navbar({data, updated, seasons, watchlist, handleSeasons, showPlayers, handleShowPlayers, showWatchlist, handleShowWatchlist, handleSearch}: NavbarProps) {
+function Navbar({data, updated, seasons, watchlist, handleSeasons, showPlayers, handleShowPlayers, showWatchlist, handleShowWatchlist, handleSearch, showTeams, handleShowTeams, showGames, handleShowGames}: NavbarProps) {
 
     return (
         <nav className="navbar">
             <input id='search' autoFocus autoComplete='off' placeholder='Search Player' type='text' onKeyUp={handleSearch}></input>
-            <ul>
-                <li><SeasonDropdown all_seasons={data.meta.seasons} seasons={seasons} handleSeasons={handleSeasons}/></li>
-                <li><WatchlistButton watchlist={watchlist} showWatchlist={showWatchlist} handleShowWatchlist={handleShowWatchlist} /></li>
-                <li><PlayersButton showPlayers={showPlayers} handleShowPlayers={handleShowPlayers} /></li>
-                <li><button className="nav-button">Teams</button></li>
-                <li><button className="nav-button">Games</button></li>
-            </ul>
+            <SeasonDropdown all_seasons={data.meta.seasons} seasons={seasons} handleSeasons={handleSeasons}/>
+            <WatchlistButton watchlist={watchlist} showWatchlist={showWatchlist} handleShowWatchlist={handleShowWatchlist} />
+            <VisibilityButton label='Players' showState={showPlayers} handleVisibility={handleShowPlayers} />
+            <VisibilityButton label='Teams' showState={showTeams} handleVisibility={handleShowTeams} />
+            <VisibilityButton label='Games' showState={showGames} handleVisibility={handleShowGames} />
             Last Updated: {updated}
         </nav>
     );
