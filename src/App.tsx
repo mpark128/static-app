@@ -6,6 +6,7 @@ import Player from './Player';
 import * as postgres_data from './postgres_data.json';
 import Navbar from './Navbar';
 import Teams from './Teams';
+import Games from './Games';
 
 function App() {
   // get data from json server
@@ -135,7 +136,9 @@ function App() {
     const pool:player_obj[] = all_players.filter(p => p.player.team_id === team_id);
     setPlayers(pool);
     setPosName(null);
+    setShowPlayers(true);
     setShowTeams(false);
+    setShowGames(false);
     window.scrollTo({top: 0});
   }
 
@@ -247,6 +250,7 @@ function App() {
         {showGames &&
           <div>
             <h1>Games</h1>
+            <Games seasons={seasons} games={games} teams={teams} handleTeam={handleTeam} />
           </div>
         }
       </div>

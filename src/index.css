@@ -33,7 +33,7 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: left;
-  max-width: 80vw;
+  max-width: 90vw;
   margin: 0 auto;
   position: relative;
 }
